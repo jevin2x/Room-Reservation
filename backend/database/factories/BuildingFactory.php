@@ -1,0 +1,26 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Building;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<Building>
+ */
+class BuildingFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'name' => strtoupper(fake()->lexify('??')).'-Building',
+            'code' => fake()->unique()->lexify('???'),
+            'description' => fake()->sentence(),
+        ];
+    }
+}
