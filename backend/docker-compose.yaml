@@ -1,3 +1,4 @@
+
 services:
   app:
     build:
@@ -9,16 +10,19 @@ services:
     env_file:
       - .env.docker
     environment:
+      DB_CONNECTION: mysql
       DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: test_docker
+      DB_USERNAME: laravel
+      DB_PASSWORD: secret
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
       test:
-        [
-          "CMD-SHELL",
-          "php -r '$$socket = @fsockopen(\"127.0.0.1\", 9000); exit($$socket ? 0 : 1);'",
-        ]
+        - CMD-SHELL
+        - php -r '$$socket = @fsockopen("127.0.0.1", 9000); exit($$socket ? 0 : 1);'
       interval: 5s
       timeout: 3s
       retries: 20
@@ -60,17 +64,15 @@ services:
       - "127.0.0.1:3309:3306"
     healthcheck:
       test:
-        [
-          "CMD-SHELL",
-          "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent",
-        ]
+        - CMD-SHELL
+        - mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 30s
     networks:
       - laravel-network
-    
+
   phpmyadmin-new:
     image: phpmyadmin:5
     restart: unless-stopped
@@ -85,7 +87,6 @@ services:
       - "127.0.0.1:3002:80"
     networks:
       - laravel-network
-
 
 networks:
   laravel-network:
